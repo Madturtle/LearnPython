@@ -25,15 +25,11 @@ def file_exists(name):
 def handle_file(name):
     text = pd.read_table('game_many_user.text',encoding='utf-8',sep=' ')
     #text = text.astype(str)
-
     y =text[text['姓名'].astype(str).str.contains(name)].index.tolist()
-    print(y)
     if y :
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
         #for i in range(text.shape[0]):
         i = y[0]
         if name == text.loc[i,'姓名']:
-            print(text.loc[i,'姓名'])
             print('{},你已经玩了{num}次，最少{num1}轮猜出答案，平均{num2:.2f}轮猜出答案，开始游戏！'.format(name,num = int(text.loc[i,'次数']),num1 = int(text.loc[i,'最少猜出答案数']),num2=float(text.loc[i,'平均猜出答案数'])))
             game_time, game_turn = start_game()
             text.loc[i, '次数'] = int(text.loc[i,'次数'])+game_time
@@ -45,18 +41,13 @@ def handle_file(name):
                     text.loc[i, '最少猜出答案数'] = game_turn
             text.loc[i, '平均猜出答案数'] = (a + text.loc[i, '最少猜出答案数'])/text.loc[i, '次数']
             ave = [name,text.loc[i, '次数'],text.loc[i,'最少猜出答案数'],text.loc[i, '平均猜出答案数']]
-            print(ave)
             text.loc[i] = ave
             text.to_csv('game_many_user.text', sep=' ', index=False, mode='r+')
             print('{},你已经玩了{num}次，最少{num1}轮猜出答案，平均{num2:.2f}轮猜出答案，游戏结束！'.format(name,num = int(text.loc[i,'次数']),num1 = int(text.loc[i,'最少猜出答案数']),num2=float(text.loc[i,'平均猜出答案数'])))
 
 
     else:
-        print("##########################################")
-        print("123456789987654321")
         file = pd.DataFrame([[name,0,0,0.00]], columns=['姓名', '次数', '最少猜出答案数', '平均猜出答案数'])
-        print(file)
-        print('||||||||||||||||||||||||||||||||||||||||||||||')
         report = pd.concat([text, file], ignore_index=True)
         report.to_csv('game_many_user.text', sep=' ',index=False, mode='a+', header=False)
         handle_file(name)
