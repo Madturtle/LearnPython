@@ -19,5 +19,11 @@ ave1.insert(0,'平均')
 #因无法用函数和方法将学科的平均分加入第一行，所以将其构建为一个DF，用concat方法将两个DF拼接
 insertRow = pd.DataFrame([ave1],columns=['姓名','语文','数学','英语','物理','化学','生物','政治','历史','地理','平均分'])
 report = pd.concat([insertRow,report],ignore_index=True)
+
+#report = report.astype(str)
+for k in range(report.shape[0]):
+    for c in report.columns[1:]:
+        if float(report.loc[k,c]) < 60:
+            report.loc[k, c] = '不及格'
 report.index.name = '名次'    #将index重命名为名次
-print(report)
+report.to_csv('result.text', sep=' ', mode='a+')
